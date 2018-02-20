@@ -1,5 +1,6 @@
 package com.example.andrei.abn_quizapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -12,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.andrei.abn_quizapp.Questions;
 import com.example.andrei.abn_quizapp.R;
@@ -61,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
 
         //initialize all elements needed
         initialize();
-
     }
 
     public void pressedNext(View v) {
@@ -131,7 +132,10 @@ public class MainActivity extends AppCompatActivity {
             Button btn = findViewById(R.id.submit);
             btn.setText(getResources().getString(R.string.reset));
 
-            //check all the answers
+            //calculate the score
+            calculateScore();
+
+            //check all the answer of active question
             checkAnswers();
         } else{
             phase = 0; //active phase
@@ -147,26 +151,43 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void checkAnswers(){
-        int i;
+    private void calculateScore(){
+        int count = 0;
+        for(int i = 0; i < questionNumber; i++){
+            if(answerIsCorrect(i)) count++;
+        }
 
-        if(Q[activeQuestion].cath == 1 || Q[activeQuestion].cath == 2){
-            for(i = 1; i <= 4; i++){
-                if(Q[activeQuestion].userAnswers[i] != Q[activeQuestion].correct[i]){
-                    break;
+        Toast toast = Toast.makeText(getApplicationContext(), "You answered " + count + " correct questions", Toast.LENGTH_LONG);
+        toast.show();
+    }
+
+    private boolean answerIsCorrect(int val){
+        if(Q[val].cath == 1 || Q[val].cath == 2){
+            for(int i = 1; i <= 4; i++){
+                if(Q[val].userAnswers[i] != Q[val].correct[i]){
+                    return false;
                 }
             }
-            if(i == 5) {
+        }
+        else if(Q[val].cath == 3){
+            if(Q[val].userAnswerCath3.trim().toLowerCase()
+                    .compareTo(Q[val].answ[0].trim().toLowerCase()) != 0)
+                return false;
+        }
+        return true;
+    }
+
+    private void checkAnswers(){
+
+        if(Q[activeQuestion].cath == 1 || Q[activeQuestion].cath == 2){
+            if(answerIsCorrect(activeQuestion))
                 question.setBackgroundColor(getResources().getColor(R.color.correct));
                 return;
-            }
         }
         else if(Q[activeQuestion].cath == 3){
-            if(Q[activeQuestion].userAnswerCath3.trim().toLowerCase()
-                    .compareTo(Q[activeQuestion].answ[0].trim().toLowerCase()) == 0){
+            if(answerIsCorrect(activeQuestion))
                 question.setBackgroundColor(getResources().getColor(R.color.correct));
                 return;
-            }
         }
         question.setBackgroundColor(getResources().getColor(R.color.incorrect));
     }
@@ -184,7 +205,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         addListeners();
-
         enableQuestion();//set the first question
     }
 

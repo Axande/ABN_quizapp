@@ -40,8 +40,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/initialQ" />
-
-
         </LinearLayout>
 
         <TextView
@@ -110,7 +108,6 @@
                 android:paddingRight="@dimen/_16dp"
                 android:paddingTop="@dimen/_16dp"
                 android:text="@string/answer4" />
-
         </LinearLayout>
         <!--End type1 question-->
 
@@ -141,7 +138,6 @@
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
                     android:src="@drawable/ic_launcher_background" />
-
             </LinearLayout>
 
             <LinearLayout
@@ -164,9 +160,7 @@
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
                     android:src="@drawable/ic_launcher_background" />
-
             </LinearLayout>
-
         </LinearLayout>
         <!--End type2 question-->
 
@@ -185,7 +179,6 @@
                 android:layout_marginStart="@dimen/_16dp"
                 android:layout_marginTop="@dimen/_16dp"
                 android:hint="@string/answer" />
-
         </LinearLayout>
         <!--End type3 question-->
 
@@ -209,7 +202,6 @@
                 android:layout_weight="3"
                 android:onClick="pressedNext"
                 android:text="@string/next" />
-
         </LinearLayout>
 
         <Button
