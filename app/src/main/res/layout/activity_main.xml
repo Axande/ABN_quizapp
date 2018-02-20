@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.andrei.abn_quizapp.MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="@dimen/_16dp"
+            android:paddingLeft="@dimen/_16dp"
+            android:paddingRight="@dimen/_16dp"
+            android:paddingTop="@dimen/_16dp"
+            android:text="@string/title"
+            android:textSize="@dimen/_24sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/_8dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/questionNo"
+                android:layout_marginEnd="@dimen/_8dp"/>
+
+            <TextView
+                android:id="@+id/question_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/initialQ" />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="@dimen/_16dp"
+            android:paddingLeft="@dimen/_16dp"
+            android:paddingRight="@dimen/_16dp"
+            android:paddingTop="@dimen/_16dp"
+            android:text="@string/question"
+            android:textSize="@dimen/_20sp" />
+
+        <!--Begin type1 question-->
+        <LinearLayout
+            android:id="@+id/question_type1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/answer1_type1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_size"
+                android:background="@color/colorPrimary"
+                android:gravity="center"
+                android:paddingBottom="@dimen/_16dp"
+                android:paddingLeft="@dimen/_16dp"
+                android:paddingRight="@dimen/_16dp"
+                android:paddingTop="@dimen/_16dp"
+                android:text="@string/answer1" />
+
+            <TextView
+                android:id="@+id/answer2_type1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_size"
+                android:background="@color/colorPrimary"
+                android:gravity="center"
+                android:paddingBottom="@dimen/_16dp"
+                android:paddingLeft="@dimen/_16dp"
+                android:paddingRight="@dimen/_16dp"
+                android:paddingTop="@dimen/_16dp"
+                android:text="@string/answer2" />
+
+            <TextView
+                android:id="@+id/answer3_type1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_size"
+                android:background="@color/colorPrimary"
+                android:gravity="center"
+                android:paddingBottom="@dimen/_16dp"
+                android:paddingLeft="@dimen/_16dp"
+                android:paddingRight="@dimen/_16dp"
+                android:paddingTop="@dimen/_16dp"
+                android:text="@string/answer3" />
+
+            <TextView
+                android:id="@+id/answer4_type1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_size"
+                android:background="@color/colorPrimary"
+                android:gravity="center"
+                android:paddingBottom="@dimen/_16dp"
+                android:paddingLeft="@dimen/_16dp"
+                android:paddingRight="@dimen/_16dp"
+                android:paddingTop="@dimen/_16dp"
+                android:text="@string/answer4" />
+
+        </LinearLayout>
+        <!--End type1 question-->
+
+        <!--Begin type2 question-->
+        <LinearLayout
+            android:id="@+id/question_type2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/img1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_launcher_background" />
+
+                <ImageView
+                    android:id="@+id/img2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_launcher_background" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/img3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_launcher_background" />
+
+                <ImageView
+                    android:id="@+id/img4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_launcher_background" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+        <!--End type2 question-->
+
+        <!--Begin typ3 question-->
+        <LinearLayout
+            android:id="@+id/question_type3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/answerQ3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_16dp"
+                android:layout_marginStart="@dimen/_16dp"
+                android:layout_marginTop="@dimen/_16dp"
+                android:hint="@string/answer" />
+
+        </LinearLayout>
+        <!--End type3 question-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_prev"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="pressedPrev"
+                android:text="@string/prev" />
+
+            <Button
+                android:id="@+id/btn_next"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:onClick="pressedNext"
+                android:text="@string/next" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_16dp"
+            android:text="@string/submit"
+            android:onClick="submitAnswers"/>
+    </LinearLayout>
+
+</ScrollView>
