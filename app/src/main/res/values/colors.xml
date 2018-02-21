@@ -7,4 +7,5 @@
     <color name="correct">#1b5e20</color>
     <color name="incorrect">#b71c1c</color>
     <color name="neutral">#ffffff</color>
+    <color name="active">#4db6ac</color>
 </resources>

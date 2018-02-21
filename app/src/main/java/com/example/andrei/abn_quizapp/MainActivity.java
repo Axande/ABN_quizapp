@@ -9,9 +9,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,18 +40,13 @@ public class MainActivity extends AppCompatActivity {
     Questions Q[] = new Questions[50]; //array of 50 questions
 
     //used for action listeners on images
-    ImageView[] im;
-    TextView[] am;
+    RadioGroup rg;
+    CheckBox[] cb;
 
     TextView question;
+    EditText answerQ3;
 
-    //image alpha value for active and non-active images
-    final int active = 255;
-    final int passive = 100;
-
-    //variable to determine which textview and imageview to change
-    int fieldInFocus = 0;
-    int toUpdate = 0;
+    Button btn_submit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
             checkAnswers();
         }
         else {
-            checkSpecialQ3();
+            saveAnswers();
 
             //move to the next question if there is one
             activeQuestion++;
@@ -99,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
             checkAnswers();
         }
         else{
-            checkSpecialQ3();
+            saveAnswers();
 
             //move to the previous question if there is one
             activeQuestion--;
@@ -115,13 +113,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void submitAnswers(View v) {
 
-        //check if the current element is a type3 question and save its data
-        checkSpecialQ3();
-
+        saveAnswers();
         if(phase == 0){
             phase = 1; //review phase
-
-            removeListeners();
 
             //send the user to the first question to start review
             activeQuestion = 0;
@@ -129,8 +123,7 @@ public class MainActivity extends AppCompatActivity {
             enableQuestion();
 
             //change the text on the button and prepare for reset
-            Button btn = findViewById(R.id.submit);
-            btn.setText(getResources().getString(R.string.reset));
+            btn_submit.setText(getResources().getString(R.string.reset));
 
             //calculate the score
             calculateScore();
@@ -140,14 +133,34 @@ public class MainActivity extends AppCompatActivity {
         } else{
             phase = 0; //active phase
 
-            addListeners();
             resetAll();
             activeQuestion = 0;
             updateQNo();
             enableQuestion();
 
-            Button btn = findViewById(R.id.submit);
-            btn.setText(getResources().getString(R.string.submit));
+            btn_submit.setText(getResources().getString(R.string.submit));
+        }
+    }
+
+    private void saveAnswers(){
+        if(Q[activeQuestion].cath == 1){
+            for(int i = 1; i <= 4; i++)
+                if(cb[i].isChecked())
+                    Q[activeQuestion].userAnswers[i] = true;
+                else
+                    Q[activeQuestion].userAnswers[i] = false;
+        }
+        else if(Q[activeQuestion].cath == 4){
+            for(int i = 0; i < rg.getChildCount(); i++){
+                RadioButton rb = (RadioButton) rg.getChildAt(i);
+                if(rb.isChecked())
+                    Q[activeQuestion].userAnswers[i+1] = true;
+                else
+                    Q[activeQuestion].userAnswers[i+1] = false;
+            }
+        }
+        else if(Q[activeQuestion].cath == 3){
+            Q[activeQuestion].userAnswerCath3 = String.valueOf(answerQ3.getText());
         }
     }
 
@@ -162,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean answerIsCorrect(int val){
-        if(Q[val].cath == 1 || Q[val].cath == 2){
+        if(Q[val].cath == 1 || Q[val].cath == 4){
             for(int i = 1; i <= 4; i++){
                 if(Q[val].userAnswers[i] != Q[val].correct[i]){
                     return false;
@@ -178,16 +191,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkAnswers(){
-
-        if(Q[activeQuestion].cath == 1 || Q[activeQuestion].cath == 2){
-            if(answerIsCorrect(activeQuestion))
-                question.setBackgroundColor(getResources().getColor(R.color.correct));
-                return;
-        }
-        else if(Q[activeQuestion].cath == 3){
-            if(answerIsCorrect(activeQuestion))
-                question.setBackgroundColor(getResources().getColor(R.color.correct));
-                return;
+        if(answerIsCorrect(activeQuestion)) {
+            question.setBackgroundColor(getResources().getColor(R.color.correct));
+            return;
         }
         question.setBackgroundColor(getResources().getColor(R.color.incorrect));
     }
@@ -196,30 +202,18 @@ public class MainActivity extends AppCompatActivity {
 
         question = findViewById(R.id.question);
 
-        im = new ImageView[5];
-        am = new TextView[5];
+        rg = findViewById(R.id.answerQ4);
+        cb = new CheckBox[5];
+        cb[1] = findViewById(R.id.answer1);
+        cb[2] = findViewById(R.id.answer2);
+        cb[3] = findViewById(R.id.answer3);
+        cb[4] = findViewById(R.id.answer4);
 
-        for(int i = 1; i <= 4; i++) {
-            im[i] = findViewById(getId("img" + i));
-            am[i] = findViewById(getId("answer" + i + "_type1"));
-        }
+        answerQ3 = findViewById(R.id.answerQ3);
 
-        addListeners();
+        btn_submit = findViewById(R.id.submit);
+
         enableQuestion();//set the first question
-    }
-
-    private int getId(String s){
-        if(s.compareTo("img1") == 0) return R.id.img1;
-        if(s.compareTo("img2") == 0) return R.id.img2;
-        if(s.compareTo("img3") == 0) return R.id.img3;
-        if(s.compareTo("img4") == 0) return R.id.img4;
-
-        if(s.compareTo("answer1_type1") == 0) return R.id.answer1_type1;
-        if(s.compareTo("answer2_type1") == 0) return R.id.answer2_type1;
-        if(s.compareTo("answer3_type1") == 0) return R.id.answer3_type1;
-        if(s.compareTo("answer4_type1") == 0) return R.id.answer4_type1;
-
-        return 0;
     }
 
     void readQuestions() throws IOException {
@@ -236,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
 
             Q[i].cath = Integer.parseInt(br.nextLine()); //read the cathegory
 
-            if(Q[i].cath == 1 || Q[i].cath == 2){
+            if(Q[i].cath == 1 || Q[i].cath == 4){
                 for(int j = 1; j <= 4; j++){
                     read = br.nextLine();
                     aux = isCorrect(read);
@@ -267,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
         question.setText(Q[activeQuestion].question);//set the correct question
 
         LinearLayout L1 = findViewById(R.id.question_type1);
-        LinearLayout L2 = findViewById(R.id.question_type2);
+        LinearLayout L2 = findViewById(R.id.question_type4);
         LinearLayout L3 = findViewById(R.id.question_type3);
         L1.setVisibility(View.GONE);
         L2.setVisibility(View.GONE);
@@ -277,9 +271,9 @@ public class MainActivity extends AppCompatActivity {
             L1.setVisibility(View.VISIBLE);
             fillQ1();
         }
-        else if(Q[activeQuestion].cath == 2){
+        else if(Q[activeQuestion].cath == 4){
             L2.setVisibility(View.VISIBLE);
-            fillQ2();
+            fillQ4();
         }
         else if(Q[activeQuestion].cath == 3){
             L3.setVisibility(View.VISIBLE);
@@ -289,54 +283,47 @@ public class MainActivity extends AppCompatActivity {
 
     private void fillQ1(){
         for(int i = 1; i <= 4; i++){
-            am[i].setText(Q[activeQuestion].answ[i]);
+            cb[i].setText(Q[activeQuestion].answ[i]);
 
             //need to update the opacity of the images(if it was already selected by the user)
-            if(!Q[activeQuestion].userAnswers[i]) am[i].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-            else am[i].setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            if(Q[activeQuestion].userAnswers[i]){
+                cb[i].setTextColor(getResources().getColor(R.color.neutral));
+                cb[i].setChecked(true);
+            }
+            else {
+                cb[i].setTextColor(getResources().getColor(R.color.active));
+                cb[i].setChecked(false);
+            }
         }
     }
 
-    private void fillQ2(){
-        for(int i = 1; i <= 4; i++){
-            //set the images according to the answer
-            im[i].setImageResource(getImage(Q[activeQuestion].answ[i]));
+    private void fillQ4(){
+        rg.clearCheck();
+        for(int i = 0; i < rg.getChildCount(); i++){
+            RadioButton rb = (RadioButton) rg.getChildAt(i);
 
-            //need to update the opacity of images
-            if(Q[activeQuestion].userAnswers[i]) im[i].setImageAlpha(active);
-            else im[i].setImageAlpha(passive);
+            rb.setText(Q[activeQuestion].answ[i+1]);
+
+            //TODO: there is a small bug
+            if(Q[activeQuestion].userAnswers[i+1]){
+                rb.setChecked(true);
+                rb.setTextColor(getResources().getColor(R.color.active));
+            }
+            else rb.setTextColor(getResources().getColor(R.color.neutral));
         }
-    }
-
-    /*
-    Since I could not find a way to access a resource by using a string, I had to implement this
-    method.
-    */
-    private int getImage(String s){
-        if(s.compareTo("cow") == 0) return R.drawable.cow;
-        if(s.compareTo("monkey") == 0) return R.drawable.monkey;
-        if(s.compareTo("elephant") == 0) return R.drawable.elephant;
-        if(s.compareTo("pig") == 0) return R.drawable.pig;
-        if(s.compareTo("snail") == 0) return R.drawable.snail;
-        if(s.compareTo("bear") == 0) return R.drawable.bear;
-        if(s.compareTo("rabbit") == 0) return R.drawable.rabbit;
-
-        return 0;
     }
 
     //when type3 question appears, use this function to fill the fields
     private void fillQ3(){
-        EditText et = findViewById(R.id.answerQ3);
-        et.setText(Q[activeQuestion].userAnswerCath3);
+        answerQ3.setText(Q[activeQuestion].userAnswerCath3);
 
         if(phase != 0){
-            et.setEnabled(false);
+            answerQ3.setEnabled(false);
         }
     }
 
     //reset all savings(but not the read elements from the file)
     private void resetAll() {
-
         //clear all user's answers
         for (int i = 0; i < questionNumber; i++) {
             for (int j = 0; j < 5; j++)
@@ -346,18 +333,9 @@ public class MainActivity extends AppCompatActivity {
         activeQuestion = 0;
 
         //enable question3 field which will be disabled for feedback part
-        EditText et = findViewById(R.id.answerQ3);
-        et.setEnabled(true);
+        answerQ3.setEnabled(true);
 
         question.setBackgroundColor(getResources().getColor(R.color.neutral));
-    }
-
-    //this is a case to save the data given in a type 3 question. Otherwise data won`t be saved
-    private void checkSpecialQ3(){
-        if(Q[activeQuestion].cath == 3){
-            EditText et = findViewById(R.id.answerQ3);
-            Q[activeQuestion].userAnswerCath3 = String.valueOf(et.getText());
-        }
     }
 
     //update the question number textView
@@ -366,83 +344,4 @@ public class MainActivity extends AppCompatActivity {
         tw.setText((activeQuestion+1) + "/" + questionNumber);
     }
 
-    //when a click on textView occurs, this is triggered
-    private void changeTextField(){
-        int i;
-
-        Log.println(Log.INFO, "", "fieldInFocus = " + fieldInFocus);
-        for(i = 1; i <= 4; i++){
-            if(am[i].getId() == fieldInFocus){
-                toUpdate = i;
-                Log.println(Log.INFO, "", "which = " + i);
-                break;
-            }
-        }
-        if(i == 5) return;
-
-        if(!Q[activeQuestion].userAnswers[toUpdate]){
-            Q[activeQuestion].userAnswers[toUpdate] = true;
-            am[toUpdate].setBackgroundColor(getResources().getColor(R.color.colorAccent));
-        } else{
-            Q[activeQuestion].userAnswers[toUpdate] = false;
-            am[toUpdate].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        }
-    }
-
-    //when a click on image occurs, this is triggered
-    private void changeImageField(){
-        int i;
-
-        Log.println(Log.INFO, "", "fieldInFocus = " + fieldInFocus);
-        for(i = 1; i <= 4; i++){
-            if(im[i].getId() == fieldInFocus){
-                toUpdate = i;
-                Log.println(Log.INFO, "", "which = " + i);
-                break;
-            }
-        }
-        if(i == 5) return;
-
-        for(i = 1; i <= 4; i++) {
-            im[i].setImageAlpha(passive);
-            Q[activeQuestion].userAnswers[i] = false;
-        }
-
-        im[toUpdate].setImageAlpha(active);
-        Q[activeQuestion].userAnswers[toUpdate] = true;
-    }
-
-    /*
-    Add listeners to the 4 images and text views defined in the xml file. The elements that are not
-    active at the moment are hidden, but still need to have handlers implemented.
-     */
-    private void addListeners(){
-
-        for(int i = 1; i <= 4; i++){
-
-            am[i].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    fieldInFocus = view.getId();
-                    changeTextField();
-                }
-            });
-
-            im[i].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    fieldInFocus = view.getId();
-                    changeImageField();
-                }
-            });
-        }
-    }
-
-    //detach all listeners set before. used for verification phase
-    private void removeListeners(){
-        for(int i = 1; i <= 4; i++){
-            am[i].setOnClickListener(null);
-            im[i].setOnClickListener(null);
-        }
-    }
 }
